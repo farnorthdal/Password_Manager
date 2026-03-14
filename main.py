@@ -1,8 +1,45 @@
 from tkinter import *
+from tkinter import messagebox
+from random import randint, choice, shuffle
+import pyperclip
 
-def button_clicked():
-    pass
+def save():
+    website = entry_web.get()
+    email = entry_email.get()
+    password = entry_pass.get()
+
+    if len(website) == 0 or len(email) == 0 or len(password) == 0:
+        messagebox.showinfo("Oops", "Please don't leave any fields empty.")
+    else:
+        is_ok = messagebox.askokcancel(title=f"{website}", message=f"These are the details entered:\nemail:  {email}\nPassword:  {password}\n"
+                                f">>> Is it OK to save? <<<")
+        if is_ok:
+            with open("password.txt", "a") as f:
+                f.write(f"{website} | {email} | {password}\n")
+
+            entry_web.delete(0, END)
+            entry_pass.delete(0, END)
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def generate_password():
+
+    entry_pass.delete(0, END)
+
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    password_list = (
+        [choice(letters) for _ in range(randint(8,10))] +
+        [choice(numbers) for _ in range(randint(2,4))] +
+        [choice(symbols) for _ in range(randint(2,4))]
+    )
+
+    shuffle(password_list)
+    password = "".join(password_list)
+    entry_pass.insert(0, password)
+    # save password to the clipboard
+    pyperclip.copy(password)
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -42,10 +79,10 @@ entry_pass = Entry(width=21)
 entry_pass.grid(column=1, row=3, padx=5, pady=5, sticky="we")
 
 #Buttons
-button_gen = Button(window, text="Generate Password", command=button_clicked)
+button_gen = Button(window, text="Generate Password", command=generate_password)
 button_gen.grid(column=2, row=3)
 
-button_add = Button(window, text="Add", width=30, command=button_clicked)
+button_add = Button(window, text="Add", width=43, command=save)
 button_add.grid(column=1, row=4, columnspan=2)
 
 
